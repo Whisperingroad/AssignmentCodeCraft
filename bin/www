@@ -100,14 +100,14 @@ io.sockets.on('connection', function(socket){
 						items: []
 					};
 				}
-				console.log(data.id + "is joining " + data.room);
+				console.log(data.id + "is joining(join_sharebox) " + data.room);
 				io.to(data.room).emit('UPDATE_MEMBERS', clients[data.room])
 
 			}
 			io.emit('SOCKET_CONTROL_UPDATE', clients);
-
-
 		});
+		
+		
 
 		socket.on('LEAVE_SHAREBOX', function(data){
 			console.log("left")
@@ -178,6 +178,7 @@ io.sockets.on('connection', function(socket){
 			// if no
 			if(_.isUndefined(clients[data.room])){
 				socket.join(data.room);
+				
 				var ownderInfo = {
 						clientId: data.ownerId,
 						socketId: socket.id,
@@ -189,7 +190,7 @@ io.sockets.on('connection', function(socket){
 					members: [ownderInfo] 
 				};
 
-				console.log(data.id + "is joining " + data.room);
+				console.log(data.id + "is joining(add_user) " + data.room);
 				io.to(data.room).emit('UPDATE_MEMBERS', clients[data.room])
 			}
 
@@ -228,12 +229,50 @@ io.sockets.on('connection', function(socket){
 		socket.on('INVITE_ACCEPT', function(data){
 			if(!(_.isUndefined(clients[data.room]))){
 				socket.join(data.room);
-				console.log(data.id + "is joining " + data.room)
+				console.log(data.id + "is joining(invite_accept) " + data.room)
 				io.to(data.room).emit('NEW_MEMBER_JOINED', data);
 			}
 			io.emit('SOCKET_CONTROL_UPDATE', clients);
 		})
-
+		
+		var readAnnouncement = 0;
+		// sharebox creator has created an announcement
+		socket.on('CREATE_ANNOUNCEMENT', function(data)
+		{
+			console.log("Enter server create announcement");
+			readAnnouncement = 0;
+			if(!(_.isUndefined(clients[data.room])))
+			{
+				console.log("here" + clients[data.room].members.length);
+				announcement = data.announcement;
+				for (var i = clients[data.room].members.length - 1; i >= 0; i--) {
+					// if broadcast sends to only the leader
+					// use this line
+					socket.broadcast.to(data.room).emit('RECEIVE_ANNOUNCEMENT', announcement);	
+					
+					//socket.broadcast.to(clients[data.room].members[i].clientID).emit('RECEIVE_ANNOUNCEMENT' , announcement);
+				}
+				
+			}
+			io.emit('SOCKET_CONTROL_UPDATE', clients);
+		})
+		
+		// receive notification when member reads an announcment
+		socket.on('READ_ANNOUNCEMENT', function(data)
+		{
+			if(!(_.isUndefined(clients[data.room])))
+			{
+			 	readAnnouncement = readAnnouncement + 1;
+				if (readAnnouncement === clients[data.room].members.length)
+				{
+					console.log("everyone has read the announcements");
+					// check if this message sends to all clients
+					socket.broadcast.to(data.room).emit('COMPLETE_ANNOUNCEMENT', 'Everyone has read the announcement');				
+				}
+			}
+			io.emit('SOCKET_CONTROL_UPDATE', clients);		
+		})
+		
 		socket.on('INVITE_REJECT', function(data){
 			if(!(_.isUndefined(clients[data.room]))){
 				clients[data.room].members = _.reject(clients[data.room].members, function (member){
@@ -247,8 +286,6 @@ io.sockets.on('connection', function(socket){
 			}
 			io.emit('SOCKET_CONTROL_UPDATE', clients);
 		})
-
-
 
 		socket.on('GET_MEMBERS', function(data){
 			if(!(_.isUndefined(clients[data.room]))){
