@@ -1518,6 +1518,66 @@ IDE_Morph.prototype.createShareBoxTitleBarButtons = function () {
     button.fixLayout();
     shareBoxAddMemberButton = button;
 
+    // button = new PushButtonMorph(
+    //     this,
+    //     "showAnnouncementPopup",
+    //     //"showMembersClosedPopup",
+    //     new SymbolMorph('flag', 14),
+    //     null,
+    //     null,
+    //     null,
+    //     "iconButton"
+    // );
+
+    // button.drawNew();
+    // button.hint = 'Announcement';
+    // button.fixLayout();
+    // annButton = button;
+
+    // add to title bar
+    this.shareBoxTitleBarButtons.add(shareBoxSettingsButton);
+    this.shareBoxTitleBarButtons.shareBoxSettingsButton = shareBoxSettingsButton;
+    this.shareBoxTitleBarButtons.add(shareBoxAddMemberButton);
+    this.shareBoxTitleBarButtons.shareBoxAddMemberButton = shareBoxAddMemberButton;
+    // this.shareBoxTitleBarButtons.add(annButton);
+    // this.shareBoxTitleBarButtons.annButton = annButton;
+
+    // position buttons
+    if (this.shareBoxTitleBarButtons) {
+        // // position announcement button
+        // this.shareBoxTitleBarButtons.annButton.setLeft(this.shareBoxTitleBarButtons.left());
+        // this.shareBoxTitleBarButtons.annButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
+
+        // position add new member button
+        this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.left());
+        //this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.left());
+        this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
+         //this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.annButton.right());
+
+        // position settings button
+        this.shareBoxTitleBarButtons.shareBoxSettingsButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
+        this.shareBoxTitleBarButtons.shareBoxSettingsButton.setLeft(this.shareBoxTitleBarButtons.shareBoxAddMemberButton.right());
+    }
+
+    this.fixLayout();
+    this.shareBoxTitleBarButtons.fixLayout = function () {    };
+
+}
+
+IDE_Morph.prototype.createAnnouncementTitleBarButtons = function () {
+
+    // destroy if already exists
+    if (this.announcementTitleBarButtons) {
+        this.announcementTitleBarButtons.destroy();
+    }
+
+    // initialize frame holder for buttons.
+    this.announcementTitleBarButtons = new FrameMorph();
+    this.announcementTitleBarButtons.setColor(this.groupColor.darker(20));
+    this.add(this.announcementTitleBarButtons);
+
+    console.log("Create Announcement buttons");
+
     button = new PushButtonMorph(
         this,
         "showAnnouncementPopup",
@@ -1535,31 +1595,18 @@ IDE_Morph.prototype.createShareBoxTitleBarButtons = function () {
     annButton = button;
 
     // add to title bar
-    this.shareBoxTitleBarButtons.add(shareBoxSettingsButton);
-    this.shareBoxTitleBarButtons.shareBoxSettingsButton = shareBoxSettingsButton;
-    this.shareBoxTitleBarButtons.add(shareBoxAddMemberButton);
-    this.shareBoxTitleBarButtons.shareBoxAddMemberButton = shareBoxAddMemberButton;
-    this.shareBoxTitleBarButtons.add(annButton);
-    this.shareBoxTitleBarButtons.annButton = annButton;
+    this.announcementTitleBarButtons.add(annButton);
+    this.announcementTitleBarButtons.annButton = annButton;
 
     // position buttons
-    if (this.shareBoxTitleBarButtons) {
+    if (this.announcementTitleBarButtons) {
         // position announcement button
-        this.shareBoxTitleBarButtons.annButton.setLeft(this.shareBoxTitleBarButtons.left());
-        this.shareBoxTitleBarButtons.annButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
-
-        // position add new member button
-        //this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.left());
-        this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
-         this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.annButton.right());
-
-        // position settings button
-        this.shareBoxTitleBarButtons.shareBoxSettingsButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
-        this.shareBoxTitleBarButtons.shareBoxSettingsButton.setLeft(this.shareBoxTitleBarButtons.shareBoxAddMemberButton.right());
+        this.announcementTitleBarButtons.annButton.setLeft(this.announcementTitleBarButtons.left());
+        this.announcementTitleBarButtons.annButton.setTop(this.announcementTitleBarButtons.top() + 2);
     }
 
     this.fixLayout();
-    this.shareBoxTitleBarButtons.fixLayout = function () {    };
+    this.announcementTitleBarButtons.fixLayout = function () {    };
 
 }
 
@@ -1992,6 +2039,10 @@ IDE_Morph.prototype.destroyShareBox = function() {
         this.shareBoxTitleBarButtons.destroy();
     }
 
+    if(this.announcementTitleBarButtons){
+        this.announcementTitleBarButtons.destroy();
+    }
+
     if (this.shareBoxTitleBar) {
         this.shareBoxTitleBar.destroy();
     }
@@ -2203,6 +2254,7 @@ IDE_Morph.prototype.showEntireShareBoxComponent = function(isOwner) {
         // create title bar buttons
         myself.createShareBoxTitleBar();
         myself.createShareBoxTitleBarButtons();
+        myself.createAnnouncementTitleBarButtons();
         myself.createShareBox();
         
         myself.fixLayout();
@@ -4878,9 +4930,10 @@ IDE_Morph.prototype.fixLayout = function (situation) {
 
     // heights and widths
     //var shareBoxTitleBarButtonsWidth = 90;
-    var shareBoxTitleBarButtonsWidth = 150;
+    var shareBoxTitleBarButtonsWidth = 90;
     var shareBoxTitleBarHeight = 30;
     var corralBarHeight = 90;
+    var announcementTitleBarButtonsWidth = 45;
 
     // position points
     var spriteBarPosition = new Point(205, 145);
@@ -4974,6 +5027,15 @@ IDE_Morph.prototype.fixLayout = function (situation) {
             this.shareBoxTitleBarButtons.setRight(this.stage.right());
             this.shareBoxTitleBarButtons.setWidth(shareBoxTitleBarButtonsWidth);
             this.shareBoxTitleBarButtons.setHeight(shareBoxTitleBarHeight);
+            //this.shareBoxTitleBarButtons.fixLayout();
+        }
+
+        // Share Box Title Buttons
+        if (this.announcementTitleBarButtons) {
+            this.announcementTitleBarButtons.setTop(this.stage.bottom() + shareBoxTitleTopPadding);
+            this.announcementTitleBarButtons.setRight(this.stage.right() - shareBoxTitleBarButtonsWidth);
+            this.announcementTitleBarButtons.setWidth(announcementTitleBarButtonsWidth);
+            this.announcementTitleBarButtons.setHeight(shareBoxTitleBarHeight);
             //this.shareBoxTitleBarButtons.fixLayout();
         }
 
