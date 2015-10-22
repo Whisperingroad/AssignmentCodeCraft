@@ -1781,11 +1781,11 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
 
 
     var sharer = new ShareBoxItemSharer(serializer, ide, socket);
-
+    var myself = this;
 
 	sharer.socket.on('RECEIVE_ANNOUNCEMENT', function(data)
 	{
-		this.showReceivedAnnouncementPopup(data);
+		myself.showReceivedAnnouncementPopup(data);
 	})
 
 	sharer.socket.on('COMPLETE_ANNOUNCEMENT', function(data)
@@ -3160,7 +3160,7 @@ IDE_Morph.prototype.showReceivedAnnouncementPopup = function(text) {
     button.setRight(this.receivedAnnouncementPopup.right() - 3);
     button.setTop(this.receivedAnnouncementPopup.top() + 2);
     button.action = function () { myself.receivedAnnouncementPopup.cancel(); 
-	var socketData = {id: tempIdentifier, room: room }
+	var socketData = {id: tempIdentifier, room: myself.shareboxId }
 	socket.emit('READ_ANNOUNCEMENT', socketData);
 	};
     button.drawNew();
