@@ -3213,7 +3213,7 @@ IDE_Morph.prototype.showReceivedAnnouncementPopup = function(text) {
     button.setTop(this.receivedAnnouncementPopup.top() + 2);
     button.action = function () { myself.receivedAnnouncementPopup.cancel(); 
 	var socketData = {id: tempIdentifier, room: myself.shareboxId }
-	socket.emit('READ_ANNOUNCEMENT', socketData);
+	myself.sharer.socket.emit('READ_ANNOUNCEMENT', socketData);
 	};
     button.drawNew();
     button.fixLayout();
