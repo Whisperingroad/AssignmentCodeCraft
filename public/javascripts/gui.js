@@ -1832,12 +1832,15 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
 
 	sharer.socket.on('RECEIVE_ANNOUNCEMENT', function(data)
 	{
+		console.log("Receiving announcement from server")
 		myself.showReceivedAnnouncementPopup(data);
 	})
 
 	sharer.socket.on('COMPLETE_ANNOUNCEMENT', function(data)
 	{
-		this.showMembersClosedPopup();
+		if (data == tempIdentifier){
+			myself.showMembersClosedPopup();
+		}	
 	})
     //sharer.socket.emit('join', {id: tempIdentifier, room: room });
     //console.log(tempIdentifier +": join room " + room);
@@ -3094,6 +3097,7 @@ IDE_Morph.prototype.showAddMemberPopup = function() {
 
 
 IDE_Morph.prototype.showAnnouncementPopup = function() {
+	console.log("show announcement here");
     var world = this.world();
     var myself = this;
     var popupWidth = 400;
@@ -3188,6 +3192,7 @@ IDE_Morph.prototype.showAnnouncementPopup = function() {
 
 // show announcement from creator
 IDE_Morph.prototype.showReceivedAnnouncementPopup = function(text) {
+	console.log("showReceivedAnnouncementPopup is drawn");
     var world = this.world();
     var myself = this;
     var popupWidth = 400;
@@ -3243,6 +3248,7 @@ IDE_Morph.prototype.showMembersClosedPopup = function() {
     var myself = this;
     var popupWidth = 400;
     var popupHeight = 330;
+	console.log("UI drawn, members closed popup");
 
     if (this.membersClosedPopup) {
         this.membersClosedPopup.destroy();
