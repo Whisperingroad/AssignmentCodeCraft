@@ -92,14 +92,13 @@ io.sockets.on('connection', function(socket){
 					var clientInfo = {
 						clientId: data.id,
 						socketId: socket.id,
-						isPending: false
+						isPending: false,
 					}
 					clients[data.room] = {
 						owner: clientInfo,
 						members: [clientInfo],
 						items: [],
-						announcementCount: 0,
-						announcementFlag: false 
+						announcementCount: 0
 					};
 				}
 				console.log(data.id + "is joining(join_sharebox) " + data.room);
@@ -237,27 +236,17 @@ io.sockets.on('connection', function(socket){
 			io.emit('SOCKET_CONTROL_UPDATE', clients);
 		})
 		
-
 		// sharebox creator has created an announcement
 		socket.on('CREATE_ANNOUNCEMENT', function(data)
 		{
 			console.log("Server received an announcement from sharebox creator");
-			// readAnnouncement = 0;
 			if(!(_.isUndefined(clients[data.room])))
 			{
-				if (clients[data.room].announcementFlag === false)
-				{
-					clients[data.room].announcementCount = 0;
+				clients[data.room].announcementCount = 0;
 				console.log("checking number of clients in room" + clients[data.room].members.length);
 				announcement = data.announcement;
-				//for (var i = clients[data.room].members.length - 1; i >= 0; i--) {
-					// if broadcast sends to only the leader
-					// use this line
 				console.log("sending announcement to clients");
 				socket.broadcast.to(data.room).emit('RECEIVE_ANNOUNCEMENT', announcement);
-				//io.to(data.room).emit('RECEIVE_ANNOUNCEMENT', announcement)
-					//io.to(data.room)	
-			}
 			}
 			io.emit('SOCKET_CONTROL_UPDATE', clients);
 		})
@@ -267,14 +256,13 @@ io.sockets.on('connection', function(socket){
 		{
 			if(!(_.isUndefined(clients[data.room])))
 			{
-			 	var readAnnouncement = clients[data.room].announcementCount+1;
 				clients[data.room].announcementCount += 1;
+			 	var readAnnouncement = clients[data.room].announcementCount;
 				console.log("number of announcements read" + readAnnouncement);
 				console.log("number in the room" + clients[data.room].members.length);
 				if (readAnnouncement === clients[data.room].members.length - 1)
 				{
 					console.log("everyone has read the announcements");
-					// check if this message sends to all clients
 					socket.to(data.room).emit('COMPLETE_ANNOUNCEMENT', data.room);				
 				}
 			}

@@ -3163,16 +3163,12 @@ IDE_Morph.prototype.showAnnouncementPopup = function() {
             myself.AnnouncementPopup.drawNew();
 
         } else {
-            // add member to pending members, and feedback result to the user (success/fail)
-            // this result value is returned from an internal add member function (NOT ADDED YET)
-            //var result = "group_full"; // EITHER: success, connection_error, user_offline, user_nonexistent, user_has_group, group_full
             var result = "success"
             if (result === "success") {
                 socketData = { room: myself.shareboxId, announcement : msgInput };
                 myself.sharer.socket.emit('CREATE_ANNOUNCEMENT',socketData);
                 console.log("[SOCKET-SEND] CREATE_ANNOUNCEMENT: " + JSON.stringify(socketData));
                 myself.AnnouncementPopup.cancel();
-                //myself.showAddMemberSuccessPopup(username);
             } 
         }
     };
@@ -3224,7 +3220,6 @@ IDE_Morph.prototype.showReceivedAnnouncementPopup = function(text) {
     button.fixLayout();
     this.receivedAnnouncementPopup.add(button);
 
-    // add title
     this.receivedAnnouncementPopup.labelString = "Announcement Received";
     this.receivedAnnouncementPopup.createLabel();
 
@@ -3232,7 +3227,6 @@ IDE_Morph.prototype.showReceivedAnnouncementPopup = function(text) {
     txt = new TextMorph(text);
     txt.setCenter(this.receivedAnnouncementPopup.center());
     txt.setTop(this.receivedAnnouncementPopup.top() + 40);
-    //txt.setTop(successImage.bottom() + 20);
     this.receivedAnnouncementPopup.add(txt);
     txt.drawNew();
 
@@ -3248,7 +3242,7 @@ IDE_Morph.prototype.showMembersClosedPopup = function() {
     var myself = this;
     var popupWidth = 400;
     var popupHeight = 330;
-	console.log("UI drawn, members closed popup");
+	console.log("showMembersClosedPopup is drawn");
 
     if (this.membersClosedPopup) {
         this.membersClosedPopup.destroy();
