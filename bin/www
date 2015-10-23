@@ -242,7 +242,9 @@ io.sockets.on('connection', function(socket){
 			console.log("Server received an announcement from sharebox creator");
 			if(!(_.isUndefined(clients[data.room])))
 			{
-				clients[data.room].announcementCount = 0;
+				// keep track of how many people are in the room when the
+				// announcement was created
+				clients[data.room].announcementCount = clients[data.room].members.length;
 				console.log("checking number of clients in room" + clients[data.room].members.length);
 				announcement = data.announcement;
 				console.log("sending announcement to clients");
@@ -256,11 +258,12 @@ io.sockets.on('connection', function(socket){
 		{
 			if(!(_.isUndefined(clients[data.room])))
 			{
-				clients[data.room].announcementCount += 1;
-			 	var readAnnouncement = clients[data.room].announcementCount;
-				console.log("number of announcements read" + readAnnouncement);
+				clients[data.room].announcementCount -= 1;
+			 	var unreadAnnouncement = clients[data.room].announcementCount;
+				console.log("number of announcements unread" + unreadAnnouncement);
 				console.log("number in the room" + clients[data.room].members.length);
-				if (readAnnouncement === clients[data.room].members.length - 1)
+				// leader doesn't need to read his own announcement
+				if (unreadAnnouncement === 1)
 				{
 					console.log("everyone has read the announcements");
 					socket.to(data.room).emit('COMPLETE_ANNOUNCEMENT', data.room);				
