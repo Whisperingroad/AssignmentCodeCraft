@@ -1518,41 +1518,15 @@ IDE_Morph.prototype.createShareBoxTitleBarButtons = function () {
     button.fixLayout();
     shareBoxAddMemberButton = button;
 
-    // button = new PushButtonMorph(
-    //     this,
-    //     "showAnnouncementPopup",
-    //     //"showMembersClosedPopup",
-    //     new SymbolMorph('flag', 14),
-    //     null,
-    //     null,
-    //     null,
-    //     "iconButton"
-    // );
-
-    // button.drawNew();
-    // button.hint = 'Announcement';
-    // button.fixLayout();
-    // annButton = button;
-
     // add to title bar
     this.shareBoxTitleBarButtons.add(shareBoxSettingsButton);
     this.shareBoxTitleBarButtons.shareBoxSettingsButton = shareBoxSettingsButton;
     this.shareBoxTitleBarButtons.add(shareBoxAddMemberButton);
     this.shareBoxTitleBarButtons.shareBoxAddMemberButton = shareBoxAddMemberButton;
-    // this.shareBoxTitleBarButtons.add(annButton);
-    // this.shareBoxTitleBarButtons.annButton = annButton;
 
-    // position buttons
     if (this.shareBoxTitleBarButtons) {
-        // // position announcement button
-        // this.shareBoxTitleBarButtons.annButton.setLeft(this.shareBoxTitleBarButtons.left());
-        // this.shareBoxTitleBarButtons.annButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
-
-        // position add new member button
         this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.left());
-        //this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.left());
         this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
-         //this.shareBoxTitleBarButtons.shareBoxAddMemberButton.setLeft(this.shareBoxTitleBarButtons.annButton.right());
 
         // position settings button
         this.shareBoxTitleBarButtons.shareBoxSettingsButton.setTop(this.shareBoxTitleBarButtons.top() + 2);
@@ -1581,7 +1555,6 @@ IDE_Morph.prototype.createAnnouncementTitleBarButtons = function () {
     button = new PushButtonMorph(
         this,
         "showAnnouncementPopup",
-        //"showMembersClosedPopup",
         new SymbolMorph('flag', 14),
         null,
         null,
@@ -1842,9 +1815,7 @@ IDE_Morph.makeSocket = function (myself, shareboxId) {
 			myself.showMembersClosedPopup();
 		}	
 	})
-    //sharer.socket.emit('join', {id: tempIdentifier, room: room });
-    //console.log(tempIdentifier +": join room " + room);
-
+    
     sharer.socket.on('NEW_MEMBER_JOINED', function(data) {
         console.log("[SOCKET-RECEIVE] NEW_MEMBER_JOINED: " + JSON.stringify(data))
     });
