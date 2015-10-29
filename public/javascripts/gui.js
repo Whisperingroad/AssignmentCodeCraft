@@ -3100,7 +3100,6 @@ IDE_Morph.prototype.showAnnouncementPopup = function() {
 	console.log("show announcement here");
 	var myself = this;
 	var msg= prompt("Please enter your message");
-	var myself = this;
 	if (msg.length != 0) {
 		console.log(msg)
 		socketData = { room: myself.shareboxId, announcement : msg };
