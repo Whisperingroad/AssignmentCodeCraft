@@ -3123,7 +3123,6 @@ IDE_Morph.prototype.showReceivedAnnouncementPopup = function(announcement) {
 };
 
 IDE_Morph.prototype.showMembersClosedPopup = function() {
-	var myself = this;
 	console.log("showMembersClosedPopup is drawn");
 	// blocking function
 	alert("All members have seen your announcement");
