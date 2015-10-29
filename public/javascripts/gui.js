@@ -100,6 +100,7 @@ var currentPage;
 var maxPage;
 var refreshPage;
 
+
 // IDE_Morph ///////////////////////////////////////////////////////////
 
 // I am SNAP's top-level frame, the Editor window
@@ -1565,7 +1566,6 @@ IDE_Morph.prototype.createShareBoxTitleBarButtons = function () {
 }
 
 IDE_Morph.prototype.createAnnouncementTitleBarButtons = function () {
-
     // destroy if already exists
     if (this.announcementTitleBarButtons) {
         this.announcementTitleBarButtons.destroy();
@@ -3098,216 +3098,36 @@ IDE_Morph.prototype.showAddMemberPopup = function() {
 
 IDE_Morph.prototype.showAnnouncementPopup = function() {
 	console.log("show announcement here");
-    var world = this.world();
-    var myself = this;
-    var popupWidth = 400;
-    var popupHeight = 300;
-
-    if (this.AnnouncementPopup) {
-        this.AnnouncementPopup.destroy();
-    }
-    this.AnnouncementPopup = new DialogBoxMorph();
-    this.AnnouncementPopup.setExtent(new Point(popupWidth, popupHeight));
-
-    // close dialog button
-    button = new PushButtonMorph(
-        this,
-        null,
-        (String.fromCharCode("0xf00d")),
-        null,
-        null,
-        null,
-        "redCircleIconButton"
-    );
-
-    button.setRight(this.AnnouncementPopup.right() - 3);
-    button.setTop(this.AnnouncementPopup.top() + 2);
-    button.action = function () { myself.AnnouncementPopup.cancel(); };
-    button.drawNew();
-    button.fixLayout();
-    this.AnnouncementPopup.add(button);
-
-    // the text input box
-    var msg = new InputFieldMorph();
-    msg.setWidth(200);
-    msg.setHeight(200);
-    msg.setCenter(myself.AnnouncementPopup.center());
-    msg.fontSize = 15;
-    msg.typeInPadding = 4;
-    msg.fixLayout();
-    msg.drawNew();
-    this.AnnouncementPopup.add(msg);
-
-    // "Add" Button
-    createButton = new PushButtonMorph(null, null, "Announce", null, null, null, "green");
-    createButton.setCenter(myself.AnnouncementPopup.center());
-    createButton.setTop(msg.bottom() + 10);
-    createButton.action = function () {
-        // get the username from the input
-        var msgInput = msg.getValue();
-        var txtColor = new Color(204, 0, 0);
-
-
-        if (msgInput.length === 0) {
-            // show error message for blank username
-            if (this.txt) {
-                this.txt.destroy();
-            }
-            this.txt = new TextMorph("Please input message to announce");
-            this.txt.setColor(txtColor);
-            this.txt.setCenter(myself.AnnouncementPopup.center());
-            this.txt.setTop(createButton.bottom() + 20);
-            myself.AnnouncementPopup.add(this.txt);
-            this.txt.drawNew();
-            myself.AnnouncementPopup.fixLayout();
-            myself.AnnouncementPopup.drawNew();
-
-        } else {
-            var result = "success"
-            if (result === "success") {
-                socketData = { room: myself.shareboxId, announcement : msgInput };
-                myself.sharer.socket.emit('CREATE_ANNOUNCEMENT',socketData);
-                console.log("[SOCKET-SEND] CREATE_ANNOUNCEMENT: " + JSON.stringify(socketData));
-                myself.AnnouncementPopup.cancel();
-            } 
-        }
-    };
-    this.AnnouncementPopup.add(createButton);
-
-
-    // add title
-    this.AnnouncementPopup.labelString = "Announcement";
-    this.AnnouncementPopup.createLabel();
-
-    // popup
-    this.AnnouncementPopup.drawNew();
-    this.AnnouncementPopup.fixLayout();
-    this.AnnouncementPopup.popUp(world);
+	var myself = this;
+	var msg= prompt("Please enter your message");
+	var myself = this;
+	if (msg.length != 0) {
+		console.log(msg)
+		socketData = { room: myself.shareboxId, announcement : msg };
+		myself.sharer.socket.emit('CREATE_ANNOUNCEMENT',socketData);
+		console.log("[SOCKET-SEND] CREATE_ANNOUNCEMENT: " + JSON.stringify(socketData));
+	}
+	else{
+		alert("Message column is not filled");
+	}
 };
 
 
 // show announcement from creator
-IDE_Morph.prototype.showReceivedAnnouncementPopup = function(text) {
-	console.log("showReceivedAnnouncementPopup is drawn");
-    var world = this.world();
+IDE_Morph.prototype.showReceivedAnnouncementPopup = function(announcement) {
+	console.log("native javascript: show announcement");
     var myself = this;
-    var popupWidth = 400;
-    var popupHeight = 330;
-
-    if (this.receivedAnnouncementPopup) {
-        this.receivedAnnouncementPopup.destroy();
-    }
-    this.receivedAnnouncementPopup = new DialogBoxMorph();
-    this.receivedAnnouncementPopup.setExtent(new Point(popupWidth, popupHeight));
-
-    // close dialog button
-    button = new PushButtonMorph(
-        this,
-        null,
-        (String.fromCharCode("0xf00d")),
-        null,
-        null,
-        null,
-        "redCircleIconButton"
-    );
-    button.setRight(this.receivedAnnouncementPopup.right() - 3);
-    button.setTop(this.receivedAnnouncementPopup.top() + 2);
-    button.action = function () { myself.receivedAnnouncementPopup.cancel(); 
-	var socketData = {id: tempIdentifier, room: myself.shareboxId }
+	// blocking function
+	alert(announcement);
+	var socketData = {id: tempIdentifier, room: myself.shareboxId };
 	myself.sharer.socket.emit('READ_ANNOUNCEMENT', socketData);
-	};
-    button.drawNew();
-    button.fixLayout();
-    this.receivedAnnouncementPopup.add(button);
-
-    this.receivedAnnouncementPopup.labelString = "Announcement Received";
-    this.receivedAnnouncementPopup.createLabel();
-
-    // success message
-    txt = new TextMorph(text);
-    txt.setCenter(this.receivedAnnouncementPopup.center());
-    txt.setTop(this.receivedAnnouncementPopup.top() + 40);
-    this.receivedAnnouncementPopup.add(txt);
-    txt.drawNew();
-
-    // popup
-    this.receivedAnnouncementPopup.drawNew();
-    this.receivedAnnouncementPopup.fixLayout();
-    this.receivedAnnouncementPopup.popUp(world);
-
 };
 
 IDE_Morph.prototype.showMembersClosedPopup = function() {
-    var world = this.world();
-    var myself = this;
-    var popupWidth = 400;
-    var popupHeight = 330;
+	var myself = this;
 	console.log("showMembersClosedPopup is drawn");
-
-    if (this.membersClosedPopup) {
-        this.membersClosedPopup.destroy();
-    }
-    this.membersClosedPopup = new DialogBoxMorph();
-    this.membersClosedPopup.setExtent(new Point(popupWidth, popupHeight));
-
-    // close dialog button
-    button = new PushButtonMorph(
-        this,
-        null,
-        (String.fromCharCode("0xf00d")),
-        null,
-        null,
-        null,
-        "redCircleIconButton"
-    );
-    button.setRight(this.membersClosedPopup.right() - 3);
-    button.setTop(this.membersClosedPopup.top() + 2);
-    button.action = function () { myself.membersClosedPopup.cancel(); };
-    button.drawNew();
-    button.fixLayout();
-    this.membersClosedPopup.add(button);
-
-    // add title
-    this.membersClosedPopup.labelString = "Announcement Read!";
-    this.membersClosedPopup.createLabel();
-
-    // success image
-    var successImage = new Morph();
-    successImage.texture = 'images/success.png';
-    successImage.drawNew = function () {
-        this.image = newCanvas(this.extent());
-        var context = this.image.getContext('2d');
-        var picBgColor = myself.membersClosedPopup.color;
-        context.fillStyle = picBgColor.toString();
-        context.fillRect(0, 0, this.width(), this.height());
-        if (this.texture) {
-            this.drawTexture(this.texture);
-        }
-    };
-
-    successImage.setExtent(new Point(128, 128));
-    successImage.setCenter(this.membersClosedPopup.center());
-    successImage.setTop(this.membersClosedPopup.top() + 40);
-    this.membersClosedPopup.add(successImage);
-
-    // success message
-    txt = new TextMorph("Woohoo!\nAll members have read your announcement!\n");
-    txt.setCenter(this.membersClosedPopup.center());
-    txt.setTop(successImage.bottom() + 20);
-    this.membersClosedPopup.add(txt);
-    txt.drawNew();
-
-    // "got it!" button, closes the dialog.
-    okButton = new PushButtonMorph(null, null, "Alright!", null, null, null, "green");
-    okButton.setCenter(this.membersClosedPopup.center());
-    okButton.setBottom(this.membersClosedPopup.bottom() - 10);
-    okButton.action = function() { myself.membersClosedPopup.cancel(); };
-    this.membersClosedPopup.add(okButton);
-
-    // popup
-    this.membersClosedPopup.drawNew();
-    this.membersClosedPopup.fixLayout();
-    this.membersClosedPopup.popUp(world);
+	// blocking function
+	alert("All members have seen your announcement");
 };
 
 // notifies the user that new member has been added successfully.
