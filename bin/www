@@ -8,7 +8,7 @@ var app = require('../app');
 var debug = require('debug')('codecraft-socket:server');
 var http = require('http');
 var _ = require('underscore');
-var readAnnouncement;
+
 
 /**
  * Get port from environment and store in Express.

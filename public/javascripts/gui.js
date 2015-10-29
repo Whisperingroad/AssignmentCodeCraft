@@ -3125,7 +3125,7 @@ IDE_Morph.prototype.showReceivedAnnouncementPopup = function(announcement) {
 IDE_Morph.prototype.showMembersClosedPopup = function() {
 	console.log("showMembersClosedPopup is drawn");
 	// blocking function
-	alert("All members have seen your announcement");
+	alert("All members have read your announcement");
 };
 
 // notifies the user that new member has been added successfully.
